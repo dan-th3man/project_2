@@ -1,21 +1,43 @@
+//submit login info to the server
+let currentUser = null;
 
-  <!--Submission button --> 
-  <button onclick="submitQuiz()">Submit Quiz</button>
-  <!-- need this to pull the anwers for lederboard -->
-  <script>
-  function submitQuiz() {
-    const answers = ["A", "B", "C", "D"];
-    const score = 15;
-    const userId = "user123";
+function loginUser() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-    fetch("/submit-quiz", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers, score, userId })
-    })
-    .then(res => res.json())
-    .then(data => console.log("Server response:", data))
-    .catch(err => console.error("Error:", err));
+  fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      currentUser = data.username; // or user ID
+      alert("Login successful!");
+    } else {
+      alert("Login failed!");
     }
-  </script>
-  <!-- need this to pull the anwers for lederboard -->
+  })
+  .catch(err => console.error("Login error:", err));
+}
+//submitt quiz results 
+function submitQuiz() {
+  if (!currentUser) {
+    alert("Please log in before submitting the quiz.");
+    return;
+  }
+
+  const answers = ["A", "B", "C", "D"];
+  const score = 1;
+
+  fetch("/submit-quiz", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: currentUser, answers, score })
+  })
+  .then(res => res.json())
+  .then(data => console.log("Quiz submitted:", data))
+  .catch(err => console.error("Quiz submit error:", err));
+}
+
