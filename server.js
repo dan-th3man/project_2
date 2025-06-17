@@ -15,5 +15,4 @@ server.on("request", (req, res) => {
   //Display website
 	fs.createReadStream("./index.html").pipe(res);
 });
-
 server.listen(port);
