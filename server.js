@@ -2,7 +2,7 @@ const http = require("http");
 const fs = require("fs");
 
 const port = 3000;
-
+//submit login info
 const users = [
   { username: "testuser", password: "1234" },
   { username: "alice", password: "pass" }
@@ -32,7 +32,12 @@ const server = http.createServer((req, res) => {
       }
     });
   }
-
+  //questions
+  if (req.url === "/questions.json" && req.method === "GET") {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  fs.createReadStream("./questions.json").pipe(res);
+}
+//submit answers 
   else if (url === "/submit-quiz" && method === "POST") {
     let body = "";
     req.on("data", chunk => body += chunk);
