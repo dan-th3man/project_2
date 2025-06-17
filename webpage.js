@@ -21,6 +21,58 @@ function loginUser() {
   })
   .catch(err => console.error("Login error:", err));
 }
+//display individual questions 
+let questions = [];
+let currentIndex = 0;
+
+// Load the JSON file
+fetch("/questions.json")
+  .then(res => res.json())
+  .then(data => {
+    questions = data;
+    renderQuestion();
+  });
+
+function renderQuestion() {
+  const container = document.getElementById("quiz");
+  container.innerHTML = ""; // clear previous content
+
+  if (currentIndex < questions.length) {
+    const q = questions[currentIndex];
+
+    const div = document.createElement("div");
+    div.className = "question active";
+
+    const p = document.createElement("p");
+    p.textContent = `${currentIndex + 1}. ${q.question}`;
+    div.appendChild(p);
+
+    const input = document.createElement("input");
+    input.type = q.type || "text";
+    input.id = `answer-${currentIndex}`;
+    div.appendChild(input);
+
+    const btn = document.createElement("button");
+    btn.textContent = currentIndex < questions.length - 1 ? "Next" : "Submit";
+    btn.onclick = currentIndex < questions.length - 1 ? nextQuestion : submitQuiz;
+    div.appendChild(btn);
+
+    container.appendChild(div);
+  }
+}
+
+function nextQuestion() {
+  saveAnswer();
+  currentIndex++;
+  renderQuestion();
+}
+
+const answers = [];
+
+function saveAnswer() {
+  const input = document.getElementById(`answer-${currentIndex}`);
+  answers[currentIndex] = input.value;
+}
 //submitt quiz results 
 function submitQuiz() {
   if (!currentUser) {
