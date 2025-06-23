@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server_express.js", 
   "scripts": {
-    "start": "node server.js"
+    "start": "node server_express.js"
   },
   "dependencies": {
     "express": "^5.1.0"
